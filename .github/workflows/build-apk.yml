@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Download portal source
         run: |
-          curl -L -o source.zip "https://muse.ai/files/1422772990918355/1858055882059641/2r6ucyw0z4q9ak4bef2ks8p0/digiskool-portal-src.zip"
+          curl -L -o source.zip "https://muse.ai/files/1422772990918355/1414779697307406/mcncs1rpgtcmsgjgkx61ihhn/digiskool-portal-src.zip"
           unzip -q source.zip
           ls digiskool-flutter/lib/main.dart
 
