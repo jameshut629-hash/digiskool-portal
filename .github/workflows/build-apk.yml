@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Download portal source
         run: |
-          curl -L -o source.zip "https://muse.ai/files/1422772990918355/1659715289165511/edrzvtz24wjauztycow4t9p3/digiskool-portal-src.zip"
+          curl -L -o source.zip "https://muse.ai/files/1422772990918355/1858055882059641/2r6ucyw0z4q9ak4bef2ks8p0/digiskool-portal-src.zip"
           unzip -q source.zip
           ls digiskool-flutter/lib/main.dart
 
@@ -26,17 +26,28 @@ jobs:
         with:
           channel: stable
 
+      - name: Setup release keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > digiskool-flutter/android/app/release.p12
+          cat > digiskool-flutter/android/key.properties << 'EOF'
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=release.p12
+          EOF
+
       - name: Build APK
         working-directory: digiskool-flutter
         run: |
           flutter pub get
           flutter build apk --release --android-skip-build-dependency-validation
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/DigiSkool-Portal-v1.0.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: digiskool-portal-apk
-          path: digiskool-flutter/build/app/outputs/flutter-apk/app-release.apk
+          path: digiskool-flutter/build/app/outputs/flutter-apk/DigiSkool-Portal-v1.0.apk
 
       - name: Create public release
         uses: softprops/action-gh-release@v2
@@ -44,4 +55,4 @@ jobs:
           tag_name: v1.0
           name: "DigiSkool Portal v1.0 — Professional"
           body: "DigiSkool Institute Management Portal — Android APK (professional redesign: new login, dark mode, campus-split dashboard, JSON backup, 3-part voucher print, support chat)."
-          files: digiskool-flutter/build/app/outputs/flutter-apk/app-release.apk
+          files: digiskool-flutter/build/app/outputs/flutter-apk/DigiSkool-Portal-v1.0.apk
