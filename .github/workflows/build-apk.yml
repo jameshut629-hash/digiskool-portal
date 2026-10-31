@@ -6,6 +6,8 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download portal source
         run: |
@@ -35,3 +37,11 @@ jobs:
         with:
           name: digiskool-portal-apk
           path: digiskool-flutter/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create public release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0
+          name: "DigiSkool Portal v1.0 — Professional"
+          body: "DigiSkool Institute Management Portal — Android APK (professional redesign: new login, dark mode, campus-split dashboard, JSON backup, 3-part voucher print, support chat)."
+          files: digiskool-flutter/build/app/outputs/flutter-apk/app-release.apk
